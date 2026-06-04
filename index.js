@@ -271,6 +271,7 @@ async function callImageAPI(prompt) {
                 const img = extractImageFromResponse(taskResult);
                 if (img) return img;
             }
+            await new Promise(resolve => setTimeout(resolve, 3000));
         }
     }
 
