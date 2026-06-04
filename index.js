@@ -184,6 +184,11 @@ function escapeHtml(t) {
 
 // ===== API (根据模型自动选择端点) =====
 function extractImageFromResponse(data) {
+    //OpenAI 异步模式: data.images[0].url[0]
+    if (data.images?.length) {
+        return data.images[0].url[0]
+    }
+
     // OpenAI 标准格式: data.data[0].b64_json / url
     if (data.data?.length) {
         const img = data.data[0];
@@ -249,6 +254,23 @@ async function callImageAPI(prompt) {
     if (!resp.ok) throw new Error(`API ${resp.status}: ${await resp.text()}`);
     const data = await resp.json();
     console.log('[st-ai-image] API response:', JSON.stringify(data).slice(0, 1000));
+
+    if (data.data[0].task_id) {
+        while (true) {
+            const taskResp = await fetch(`${base}/v1/tasks/task-unified-1757156493-imcg5zqt?language=zh`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${s.apiKey}` }
+            })
+            const taskData = await taskResp.json();
+            if (taskData.data.error) {
+                throw new Error('Request Wrong. Response: ' + JSON.stringify(taskData).slice(0, 500));
+            }
+            if (taskData.data.status == 'completed') {
+                data = taskData.data.result
+                break;
+            }
+        }
+    }
 
     const img = extractImageFromResponse(data);
     if (img) return img;
