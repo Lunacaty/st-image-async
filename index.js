@@ -185,7 +185,7 @@ function escapeHtml(t) {
 // ===== API (根据模型自动选择端点) =====
 function extractImageFromResponse(data) {
     //OpenAI 异步模式: data.images[0].url[0]
-    if (data.images?.length) {
+    if (data?.images?.length) {
         return data.images[0].url[0]
     }
 
@@ -262,10 +262,10 @@ async function callImageAPI(prompt) {
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${s.apiKey}` }
             })
             const taskData = await taskResp.json();
-            if (taskData.data.error) {
+            if (taskData.data?.error) {
                 throw new Error('Request Wrong. Response: ' + JSON.stringify(taskData).slice(0, 500));
             }
-            if (taskData.data.status == 'completed') {
+            if (taskData.data?.status == 'completed') {
                 data = taskData.data.result
                 break;
             }
