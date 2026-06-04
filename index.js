@@ -267,8 +267,9 @@ async function callImageAPI(prompt) {
             }
             console.log(`任务等待中...`)
             if (taskData.data?.status == 'completed') {
-                data = taskData.data.result
-                break;
+                const taskResult = taskData.data.result
+                const img = extractImageFromResponse(taskResult);
+                if (img) return img;
             }
         }
     }
