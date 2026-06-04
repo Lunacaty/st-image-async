@@ -255,9 +255,9 @@ async function callImageAPI(prompt) {
     const data = await resp.json();
     console.log('[st-ai-image] API response:', JSON.stringify(data).slice(0, 1000));
 
-    if (data.data[0].task_id) {
+    if (data?.data[0]?.task_id) {
         while (true) {
-            const taskResp = await fetch(`${base}/v1/tasks/task-unified-1757156493-imcg5zqt?language=zh`, {
+            const taskResp = await fetch(`${base}/v1/tasks/${data?.data[0]?.task_id}?language=zh`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${s.apiKey}` }
             })
