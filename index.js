@@ -265,6 +265,7 @@ async function callImageAPI(prompt) {
             if (taskData.data?.error) {
                 throw new Error('Request Wrong. Response: ' + JSON.stringify(taskData).slice(0, 500));
             }
+            console.log(`任务等待中...`)
             if (taskData.data?.status == 'completed') {
                 data = taskData.data.result
                 break;
